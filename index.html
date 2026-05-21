@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nordic Fund Performance Analysis · Task 2B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafaf8;--white:#ffffff;--border:#e4e4dc;--border2:#d0d0c4;--text:#1a1a16;--dim:#6b6b60;--dimmer:#9b9b8e;--accent:#1a4480;--accent-light:#eef2f9;--green:#166534;--green-bg:#f0fdf4;--red:#991b1b;--red-bg:#fef2f2;--gold:#92400e;--gold-bg:#fffbeb;--serif:'Source Serif 4',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+.container{max-width:1080px;margin:0 auto;padding:0 40px}
+nav{position:sticky;top:0;z-index:50;background:rgba(250,250,248,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 40px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.nav-title{font-family:var(--serif);font-size:14px;color:var(--accent);font-weight:600}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-size:13px;color:var(--dim);text-decoration:none;transition:color 0.15s}
+.nav-links a:hover{color:var(--text)}
+.page-header{border-bottom:1px solid var(--border);padding:60px 0 48px;background:var(--white)}
+.page-header .container{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
+.header-eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.header-title{font-family:var(--serif);font-size:36px;font-weight:600;line-height:1.15;color:var(--text);margin-bottom:16px;letter-spacing:-0.01em}
+.header-desc{font-size:15px;color:var(--dim);max-width:540px;line-height:1.65}
+.header-meta{display:flex;flex-direction:column;gap:6px;text-align:right}
+.meta-row{font-family:var(--mono);font-size:11.5px;color:var(--dimmer)}
+.meta-row strong{color:var(--dim);font-weight:500}
+.numbers-bar{background:var(--white);border-bottom:1px solid var(--border)}
+.numbers-inner{max-width:1080px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:repeat(5,1fr)}
+.number-item{padding:20px 0;border-right:1px solid var(--border);text-align:center}
+.number-item:last-child{border-right:none}
+.number-val{font-family:var(--serif);font-size:24px;font-weight:600;line-height:1;margin-bottom:4px;color:var(--text)}
+.number-val.neg{color:var(--red)}.number-val.pos{color:var(--green)}.number-val.gold{color:var(--gold)}
+.number-label{font-size:11px;color:var(--dimmer);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em}
+.section{padding:64px 0;border-bottom:1px solid var(--border)}
+.section:last-of-type{border-bottom:none}
+.section-header{margin-bottom:32px}
+.section-label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);margin-bottom:8px}
+.section-title{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--text);letter-spacing:-0.01em;margin-bottom:8px}
+.section-desc{font-size:14px;color:var(--dim)}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:6px;margin-bottom:24px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--white)}
+thead tr{background:#f5f5f0}
+th{text-align:right;padding:10px 14px;font-size:11px;font-weight:600;font-family:var(--mono);letter-spacing:0.04em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--border);white-space:nowrap}
+th:first-child{text-align:left}
+td{text-align:right;padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text);font-size:13px;font-family:var(--mono)}
+td:first-child{text-align:left;font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f9f9f6}
+.bench-row td{color:var(--dimmer);font-style:italic}
+.bench-row td:first-child{font-style:italic}
+.pos{color:var(--green)}.neg{color:var(--red)}.sig{color:var(--green);font-weight:600}.dim{color:var(--dimmer)}.gold-text{color:var(--gold);font-weight:600}
+.callout{border-radius:6px;padding:18px 22px;margin:20px 0;font-size:14px;line-height:1.65;border-left:3px solid}
+.callout-blue{background:var(--accent-light);border-color:var(--accent);color:#1a3060}
+.callout-green{background:var(--green-bg);border-color:var(--green);color:#14532d}
+.callout-amber{background:var(--gold-bg);border-color:#d97706;color:#78350f}
+.callout-red{background:var(--red-bg);border-color:var(--red);color:#7f1d1d}
+.callout strong{font-weight:600}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:24px}
+.tab{padding:8px 18px;font-size:13px;font-family:var(--sans);font-weight:500;color:var(--dim);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.panel{display:none}.panel.active{display:block}
+.findings-list{display:flex;flex-direction:column;gap:2px}
+.finding{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:24px 28px;display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:start}
+.finding-num{font-family:var(--serif);font-size:36px;font-weight:300;color:var(--border2);line-height:1;padding-top:4px}
+.finding-title{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.3}
+.finding-body{font-size:14px;color:var(--dim);line-height:1.7}
+.finding-body strong{color:var(--text);font-weight:600}
+.finding-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-family:var(--mono);font-size:11px;border-radius:3px;padding:3px 8px;font-weight:500}
+.tag-blue{background:var(--accent-light);color:var(--accent)}.tag-green{background:var(--green-bg);color:var(--green)}.tag-red{background:var(--red-bg);color:var(--red)}.tag-amber{background:var(--gold-bg);color:var(--gold)}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.method-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:20px 22px}
+.method-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.method-body{font-size:13px;color:var(--dim);line-height:1.6}
+.formula{background:#f5f5f0;border:1px solid var(--border);border-radius:5px;padding:16px 20px;font-family:var(--mono);font-size:12.5px;color:var(--text);line-height:1.8;margin:16px 0}
+.events{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.event-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:20px}
+.event-date{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:500;letter-spacing:0.08em;margin-bottom:8px}
+.event-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.3}
+.event-body{font-size:12.5px;color:var(--dim);line-height:1.6}
+footer{background:var(--white);border-top:1px solid var(--border);padding:32px 40px;text-align:center;font-size:12.5px;color:var(--dimmer);font-family:var(--mono)}
+@media(max-width:800px){.container,.nav-inner,.numbers-inner{padding:0 20px}.numbers-inner{grid-template-columns:repeat(3,1fr)}.page-header .container{grid-template-columns:1fr}.header-meta{text-align:left;flex-direction:row;flex-wrap:wrap}.method-grid{grid-template-columns:1fr}.events{grid-template-columns:1fr}.nav-links{display:none}.finding{grid-template-columns:1fr}.finding-num{display:none}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-title">Nordic Fund Performance · Task 2B</div>
+    <ul class="nav-links">
+      <li><a href="#performance">Performance</a></li>
+      <li><a href="#regressions">Regressions</a></li>
+      <li><a href="#r2">R² Analysis</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#methodology">Methodology</a></li>
+      <li><a href="#recommendation">Recommendation</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="container">
+    <div>
+      <div class="header-eyebrow">Empirical Task 2B · NHH Bergen</div>
+      <h1 class="header-title">Nordic Active Fund<br>Performance Analysis</h1>
+      <p class="header-desc">A multi-factor analysis of 10 actively managed Nordic equity funds using CAPM and Fama-French 5-factor + Momentum with full currency adjustment.</p>
+    </div>
+    <div class="header-meta">
+      <div class="meta-row"><strong>Period:</strong> Apr 2021 – Mar 2026</div>
+      <div class="meta-row"><strong>Observations:</strong> T = 60 months</div>
+      <div class="meta-row"><strong>Benchmark:</strong> VINXBCAPNOKNI</div>
+      <div class="meta-row"><strong>Risk-free rate:</strong> NIBOR (monthly)</div>
+      <div class="meta-row"><strong>Factors:</strong> European FF5F + WML</div>
+      <div class="meta-row"><strong>Market factor:</strong> MSCI Nordic → NOK</div>
+    </div>
+  </div>
+</div>
+
+<div class="numbers-bar">
+  <div class="numbers-inner">
+    <div class="number-item"><div class="number-val gold">8.47%</div><div class="number-label">Benchmark Ann. Return</div></div>
+    <div class="number-item"><div class="number-val neg">7 / 10</div><div class="number-label">Funds below benchmark</div></div>
+    <div class="number-item"><div class="number-val neg">0 / 10</div><div class="number-label">Sig. alpha — CAPM</div></div>
+    <div class="number-item"><div class="number-val pos">7 / 10</div><div class="number-label">Sig. alpha — FF6 FX Adj.</div></div>
+    <div class="number-item"><div class="number-val pos">+17.6pp</div><div class="number-label">Avg R² gain — FX adjustment</div></div>
+  </div>
+</div>
+
+<div class="section" id="performance">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">01 · Performance</div>
+      <h2 class="section-title">Fund Performance Summary</h2>
+      <p class="section-desc">All returns annualised arithmetically (×12). Std dev and ratios annualised via ×√12. ★ = best in class.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fund</th><th>Ann. Return</th><th>Cum. Return</th><th>Ann. Std Dev</th><th>Ann. Sharpe</th><th>Ann. Sortino</th><th>Ann. IR</th><th>Max Drawdown</th><th>Corr.</th></tr></thead>
+        <tbody>
+          <tr><td>DNB Norden</td><td class="neg">4.86%</td><td class="neg">22.5%</td><td>12.55%</td><td class="neg">0.142</td><td class="neg">0.185</td><td class="neg">−0.812</td><td class="neg">−21.1%</td><td>0.943</td></tr>
+          <tr><td>ODIN Norden</td><td>7.17%</td><td>33.0%</td><td>17.03%</td><td>0.240</td><td>0.336</td><td class="neg">−0.192</td><td class="neg">−28.4%</td><td>0.928</td></tr>
+          <tr><td>Holberg Norden</td><td>8.44%</td><td>45.7%</td><td>13.45%</td><td>0.399</td><td>0.598</td><td class="neg">−0.005</td><td>−18.0% ★</td><td>0.903</td></tr>
+          <tr><td class="gold-text">FondsFinans Utbytte B ★</td><td class="pos">8.85% ★</td><td class="pos">49.8% ★</td><td>12.24% ★</td><td class="pos">0.475 ★</td><td class="pos">0.720 ★</td><td class="pos">+0.050 ★</td><td class="neg">−26.1%</td><td>0.827</td></tr>
+          <tr><td>Alfred Berg Gambak</td><td class="pos">8.60%</td><td class="pos">47.7%</td><td>12.46%</td><td class="pos">0.444</td><td class="pos">0.632</td><td class="pos">+0.022</td><td>−17.5% ★</td><td>0.891</td></tr>
+          <tr><td>FIRST Veritas</td><td class="neg">3.27%</td><td class="neg">10.7%</td><td>15.84%</td><td class="neg">0.012</td><td class="neg">0.017</td><td class="neg">−0.492</td><td class="neg">−27.4%</td><td>0.752</td></tr>
+          <tr><td>Handelsbanken Norden</td><td>6.27%</td><td>30.1%</td><td>14.12%</td><td>0.226</td><td>0.316</td><td class="neg">−0.594</td><td class="neg">−26.2%</td><td>0.965</td></tr>
+          <tr><td>DNB Grønt Skifte</td><td class="neg">4.07%</td><td class="neg">16.8%</td><td>13.87%</td><td class="neg">0.071</td><td class="neg">0.093</td><td class="neg">−1.037</td><td class="neg">−24.9%</td><td>0.952</td></tr>
+          <tr><td>Delphi Nordic</td><td class="neg">2.90%</td><td class="neg">11.3%</td><td>12.38%</td><td class="neg">−0.015</td><td class="neg">−0.020</td><td class="neg">−1.187</td><td class="neg">−24.0%</td><td>0.937</td></tr>
+          <tr><td>DNB Nordic Small Cap</td><td>5.93%</td><td>24.8%</td><td>17.46%</td><td>0.163</td><td>0.237</td><td class="neg">−0.281</td><td class="neg">−30.6%</td><td>0.861</td></tr>
+          <tr class="bench-row"><td>Benchmark (VINX)</td><td>8.47%</td><td>45.9%</td><td>13.43%</td><td>0.407</td><td>—</td><td>—</td><td>—</td><td>1.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-blue"><strong>Passive dominates.</strong> The benchmark outperforms 7 of 10 funds on raw return and 8 of 10 on Sharpe ratio. The return spread between best (FondsFinans, 8.85%) and worst (Delphi, 2.90%) is 595 basis points over 5 years. All maximum drawdowns clustered in September 2022 during the European rate-hiking cycle, confirming that systematic risk dominates during stress periods regardless of fund strategy.</div>
+  </div>
+</div>
+
+<div class="section" id="regressions">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">02 · Factor Models</div>
+      <h2 class="section-title">Regression Results — 4 Models per Fund</h2>
+      <p class="section-desc">★ = significant at 5% (|t| ≥ 1.96). Each model is run twice — with raw factors and with MSCI Nordic NOK as market factor + FF factors converted USD→NOK.</p>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(event,'capm_un')">CAPM — No FX Adj.</button>
+      <button class="tab" onclick="switchTab(event,'capm_adj')">CAPM — FX Adj.</button>
+      <button class="tab" onclick="switchTab(event,'ff_un')">FF6 — No FX Adj.</button>
+      <button class="tab" onclick="switchTab(event,'ff_adj')">FF6 — FX Adj.</button>
+    </div>
+    <div id="panel_capm_un" class="panel active">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fund</th><th>R²</th><th>Beta</th><th>Monthly α</th><th>Ann. Jensen α</th><th>t(α)</th></tr></thead>
+          <tbody>
+            <tr><td>DNB Norden</td><td>63.4%</td><td>0.655</td><td>0.140%</td><td class="pos">+1.68%</td><td class="dim">0.49</td></tr>
+            <tr><td>ODIN Norden</td><td>45.7%</td><td>0.758</td><td>0.332%</td><td class="pos">+3.98%</td><td class="dim">0.70</td></tr>
+            <tr><td>Holberg Norden</td><td>49.9%</td><td>0.624</td><td>0.439%</td><td class="pos">+5.27%</td><td class="dim">1.23</td></tr>
+            <tr><td>FondsFinans Utbytte B</td><td>40.6%</td><td>0.509</td><td>0.475%</td><td class="pos">+5.70%</td><td class="dim">1.35</td></tr>
+            <tr><td>Alfred Berg Gambak</td><td>52.2%</td><td>0.591</td><td>0.453%</td><td class="pos">+5.44%</td><td class="dim">1.40</td></tr>
+            <tr><td>FIRST Veritas</td><td>33.3%</td><td>0.600</td><td>0.009%</td><td>+0.11%</td><td class="dim">0.02</td></tr>
+            <tr><td>Handelsbanken Norden</td><td>59.9%</td><td>0.717</td><td>0.257%</td><td class="pos">+3.08%</td><td class="dim">0.77</td></tr>
+            <tr><td>DNB Grønt Skifte</td><td>60.6%</td><td>0.708</td><td>0.074%</td><td>+0.89%</td><td class="dim">0.23</td></tr>
+            <tr><td>Delphi Nordic</td><td>61.4%</td><td>0.636</td><td>−0.022%</td><td class="neg">−0.27%</td><td class="dim">−0.08</td></tr>
+            <tr><td>DNB Nordic Small Cap</td><td>50.1%</td><td>0.812</td><td>0.228%</td><td class="pos">+2.74%</td><td class="dim">0.49</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout-red"><strong>Zero funds show statistically significant alpha.</strong> Highest |t| = 1.40. Average R² = 52.1% — using the MSCI Nordic index in EUR with EUR risk-free rate leaves nearly half of return variation unexplained due to currency mismatch.</div>
+    </div>
+    <div id="panel_capm_adj" class="panel">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fund</th><th>R²</th><th>R² Gain</th><th>Beta</th><th>Ann. Jensen α</th><th>t(α)</th></tr></thead>
+          <tbody>
+            <tr><td>DNB Norden</td><td>84.9%</td><td class="pos">+21.5pp</td><td>0.838</td><td class="pos">+2.55%</td><td class="dim">1.16</td></tr>
+            <tr><td>ODIN Norden</td><td>67.6%</td><td class="pos">+21.9pp</td><td>1.019</td><td class="pos">+5.03%</td><td class="dim">1.15</td></tr>
+            <tr><td>Holberg Norden</td><td>68.4%</td><td class="pos">+18.4pp</td><td>0.808</td><td class="pos">+6.11%</td><td class="dim">1.80</td></tr>
+            <tr><td>FondsFinans Utbytte B</td><td>58.3%</td><td class="pos">+17.7pp</td><td>0.675</td><td class="pos">+6.40%</td><td class="dim">1.81</td></tr>
+            <tr><td>Alfred Berg Gambak</td><td>69.6%</td><td class="pos">+17.4pp</td><td>0.754</td><td class="pos">+6.22%</td><td class="sig">2.01 ★</td></tr>
+            <tr><td>FIRST Veritas</td><td>48.6%</td><td class="pos">+15.2pp</td><td>0.801</td><td>+0.93%</td><td class="dim">0.18</td></tr>
+            <tr><td>Handelsbanken Norden</td><td>80.1%</td><td class="pos">+20.2pp</td><td>0.917</td><td class="pos">+4.04%</td><td class="dim">1.42</td></tr>
+            <tr><td>DNB Grønt Skifte</td><td>78.0%</td><td class="pos">+17.4pp</td><td>0.888</td><td class="pos">+1.81%</td><td class="dim">0.62</td></tr>
+            <tr><td>Delphi Nordic</td><td>77.6%</td><td class="pos">+16.2pp</td><td>0.790</td><td class="pos">+0.55%</td><td class="dim">0.21</td></tr>
+            <tr><td>DNB Nordic Small Cap</td><td>51.4%</td><td class="pos">+1.3pp</td><td>0.910</td><td class="pos">+3.69%</td><td class="dim">0.67</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout-blue"><strong>+17.6pp average R² gain</strong> from converting the MSCI Nordic market factor from EUR to NOK and using NIBOR instead of EUR RF. Alfred Berg Gambak becomes significant at 5% (t = 2.01). Average R² rises to 68.5%.</div>
+    </div>
+    <div id="panel_ff_un" class="panel">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fund</th><th>R²</th><th>Adj R²</th><th>Ann. α</th><th>t(α)</th><th>HML β</th><th>t(HML)</th><th>SMB β</th><th>t(SMB)</th></tr></thead>
+          <tbody>
+            <tr><td>DNB Norden</td><td>67.9%</td><td>64.2%</td><td class="pos">+2.89%</td><td class="dim">0.72</td><td>−0.371</td><td class="neg">−2.13 ★</td><td>−0.237</td><td class="dim">−1.27</td></tr>
+            <tr><td>ODIN Norden</td><td>62.9%</td><td>58.6%</td><td class="pos">+16.48%</td><td class="sig">2.81 ★</td><td>−0.861</td><td class="neg">−3.39 ★</td><td>0.204</td><td class="dim">0.74</td></tr>
+            <tr><td>Holberg Norden</td><td>54.3%</td><td>49.2%</td><td class="pos">+9.28%</td><td class="dim">1.81</td><td>−0.266</td><td class="dim">−1.20</td><td>−0.214</td><td class="dim">−0.89</td></tr>
+            <tr><td>FondsFinans Utbytte B</td><td>44.7%</td><td>38.4%</td><td class="pos">+9.60%</td><td class="dim">1.88</td><td>−0.107</td><td class="dim">−0.48</td><td>−0.031</td><td class="dim">−0.13</td></tr>
+            <tr><td>Alfred Berg Gambak</td><td>54.4%</td><td>49.3%</td><td class="pos">+6.26%</td><td class="dim">1.32</td><td>−0.053</td><td class="dim">−0.26</td><td>0.193</td><td class="dim">0.87</td></tr>
+            <tr><td>FIRST Veritas</td><td>48.5%</td><td>42.7%</td><td class="pos">+11.62%</td><td class="dim">1.81</td><td>−0.841</td><td class="neg">−3.03 ★</td><td>−0.069</td><td class="dim">−0.23</td></tr>
+            <tr><td>Handelsbanken Norden</td><td>70.1%</td><td>66.7%</td><td class="pos">+11.40%</td><td class="sig">2.62 ★</td><td>−0.454</td><td class="neg">−2.41 ★</td><td>−0.095</td><td class="dim">−0.47</td></tr>
+            <tr><td>DNB Grønt Skifte</td><td>68.4%</td><td>64.8%</td><td class="pos">+5.81%</td><td class="dim">1.32</td><td>−0.559</td><td class="neg">−2.94 ★</td><td>0.014</td><td class="dim">0.07</td></tr>
+            <tr><td>Delphi Nordic</td><td>64.4%</td><td>60.4%</td><td class="pos">+2.44%</td><td class="dim">0.59</td><td>−0.304</td><td class="dim">−1.68</td><td>0.011</td><td class="dim">0.06</td></tr>
+            <tr><td>DNB Nordic Small Cap</td><td>69.8%</td><td>66.4%</td><td class="pos">+18.06%</td><td class="sig">3.34 ★</td><td>−0.351</td><td class="dim">−1.49</td><td>0.653</td><td class="sig">2.58 ★</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout-amber"><strong>4 of 10 funds significant.</strong> Using MSCI Nordic (NOK) − NIBOR as market factor throughout. The HML factor is highly significant and negative for multiple funds (ODIN −3.39, FIRST Veritas −3.03, Handelsbanken −2.41, DNB Grønt −2.94), revealing pervasive growth tilts. FF factors still in USD here.</div>
+    </div>
+    <div id="panel_ff_adj" class="panel">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Fund</th><th>R²</th><th>R² Gain</th><th>Ann. α</th><th>t(α)</th><th>HML β</th><th>t(HML)</th><th>SMB β</th><th>t(SMB)</th></tr></thead>
+          <tbody>
+            <tr><td>DNB Norden</td><td>87.5%</td><td class="pos">+19.6pp</td><td class="pos">+2.87%</td><td class="dim">1.16</td><td>−0.151</td><td class="dim">−1.43</td><td>0.102</td><td class="dim">0.98</td></tr>
+            <tr><td>ODIN Norden</td><td>80.5%</td><td class="pos">+17.6pp</td><td class="pos">+15.74%</td><td class="sig">3.73 ★</td><td>−0.609</td><td class="neg">−3.37 ★</td><td>0.726</td><td class="sig">4.12 ★</td></tr>
+            <tr><td>Holberg Norden</td><td>73.3%</td><td class="pos">+19.0pp</td><td class="pos">+8.48%</td><td class="sig">2.18 ★</td><td>−0.064</td><td class="dim">−0.39</td><td>0.190</td><td class="dim">1.17</td></tr>
+            <tr><td>FondsFinans Utbytte B</td><td>64.0%</td><td class="pos">+19.3pp</td><td class="pos">+8.95%</td><td class="sig">2.19 ★</td><td>0.050</td><td class="dim">0.28</td><td>0.328</td><td class="dim">1.92</td></tr>
+            <tr><td>Alfred Berg Gambak</td><td>76.2%</td><td class="pos">+21.8pp</td><td class="pos">+7.24%</td><td class="sig">2.13 ★</td><td>0.088</td><td class="dim">0.60</td><td>0.362</td><td class="sig">2.55 ★</td></tr>
+            <tr><td>FIRST Veritas</td><td>58.2%</td><td class="pos">+9.7pp</td><td class="pos">+9.58%</td><td class="dim">1.67</td><td>−0.611</td><td class="neg">−2.49 ★</td><td>0.458</td><td class="dim">1.91</td></tr>
+            <tr><td>Handelsbanken Norden</td><td>87.0%</td><td class="pos">+16.9pp</td><td class="pos">+10.36%</td><td class="sig">3.63 ★</td><td>−0.199</td><td class="dim">−1.63</td><td>0.434</td><td class="sig">3.65 ★</td></tr>
+            <tr><td>DNB Grønt Skifte</td><td>84.4%</td><td class="pos">+16.1pp</td><td class="pos">+6.01%</td><td class="sig">1.96 ★</td><td>−0.318</td><td class="neg">−2.43 ★</td><td>0.393</td><td class="sig">3.07 ★</td></tr>
+            <tr><td>Delphi Nordic</td><td>82.2%</td><td class="pos">+17.7pp</td><td class="pos">+2.85%</td><td class="dim">0.97</td><td>−0.117</td><td class="dim">−0.94</td><td>0.285</td><td class="sig">2.33 ★</td></tr>
+            <tr><td>DNB Nordic Small Cap</td><td>77.9%</td><td class="pos">+8.1pp</td><td class="pos">+17.20%</td><td class="sig">3.74 ★</td><td>−0.144</td><td class="dim">−0.73</td><td>1.084</td><td class="sig">5.64 ★</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout-green"><strong>7 of 10 funds significant at 5%</strong> in the fully adjusted model — up from zero in CAPM. Average R² = 77.1%. Converting the FF factors from USD to NOK reveals a pervasive small-cap tilt (SMB significant for 6 funds) invisible in the USD-denominated version.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="r2">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">03 · R² Analysis</div>
+      <h2 class="section-title">Why the R² Improvements Matter</h2>
+      <p class="section-desc">Two sequential currency adjustments — each improving model fit substantially. Both use MSCI Nordic as the market factor throughout; the improvements come from currency conversion, not factor choice.</p>
+    </div>
+    <div class="callout callout-blue" style="margin-bottom:28px;">Converting the MSCI Nordic market factor from EUR to NOK (and switching the risk-free rate from EUR RF to NIBOR) increases R² by <strong>15–22 percentage points</strong> across all funds — better currency alignment with NOK-denominated fund returns immediately improves model fit. Then converting the five FF factors (SMB, HML, RMW, CMA, WML) from USD to NOK adds another <strong>8–22 percentage points</strong> on top. Together, the two currency adjustments take average R² from ~52% up to ~77%, meaning the final model explains the vast majority of fund return variation — and yet even with this precision, not all funds generate statistically significant alpha.</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fund</th><th>CAPM No FX</th><th>CAPM FX Adj</th><th>FF6 No FX</th><th>FF6 FX Adj</th><th>Total Gain</th></tr></thead>
+        <tbody>
+          <tr><td>DNB Norden</td><td>63.4%</td><td class="pos">84.9%</td><td>67.9%</td><td class="sig">87.5%</td><td class="pos">+24.1pp</td></tr>
+          <tr><td>ODIN Norden</td><td>45.7%</td><td class="pos">67.6%</td><td>62.9%</td><td class="sig">80.5%</td><td class="pos">+34.8pp</td></tr>
+          <tr><td>Holberg Norden</td><td>49.9%</td><td class="pos">68.4%</td><td>54.3%</td><td class="sig">73.3%</td><td class="pos">+23.4pp</td></tr>
+          <tr><td>FondsFinans Utbytte B</td><td>40.6%</td><td class="pos">58.3%</td><td>44.7%</td><td class="sig">64.0%</td><td class="pos">+23.4pp</td></tr>
+          <tr><td>Alfred Berg Gambak</td><td>52.2%</td><td class="pos">69.6%</td><td>54.4%</td><td class="sig">76.2%</td><td class="pos">+24.0pp</td></tr>
+          <tr><td>FIRST Veritas</td><td>33.3%</td><td class="pos">48.6%</td><td>48.5%</td><td class="sig">58.2%</td><td class="pos">+24.9pp</td></tr>
+          <tr><td>Handelsbanken Norden</td><td>59.9%</td><td class="pos">80.1%</td><td>70.1%</td><td class="sig">87.0%</td><td class="pos">+27.1pp</td></tr>
+          <tr><td>DNB Grønt Skifte</td><td>60.6%</td><td class="pos">78.0%</td><td>68.4%</td><td class="sig">84.4%</td><td class="pos">+23.8pp</td></tr>
+          <tr><td>Delphi Nordic</td><td>61.4%</td><td class="pos">77.6%</td><td>64.4%</td><td class="sig">82.2%</td><td class="pos">+20.8pp</td></tr>
+          <tr><td>DNB Nordic Small Cap</td><td>50.1%</td><td class="pos">51.4%</td><td>69.8%</td><td class="sig">77.9%</td><td class="pos">+27.8pp</td></tr>
+          <tr class="bench-row"><td>Average</td><td>51.7%</td><td>68.5%</td><td>62.5%</td><td>77.1%</td><td class="pos">+25.4pp</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="findings">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">04 · Key Findings</div>
+      <h2 class="section-title">What the Data Tells Us</h2>
+    </div>
+    <div class="findings-list">
+      <div class="finding">
+        <div class="finding-num">01</div>
+        <div>
+          <div class="finding-title">Passive investing dominates — 7 of 10 funds trail the benchmark</div>
+          <div class="finding-body">The VINX benchmark (8.47% annualised, Sharpe 0.407) outperforms 7 of 10 funds on return and 8 of 10 on Sharpe ratio. Under CAPM, <strong>zero funds</strong> produce statistically significant alpha — the highest |t-stat| is 1.40. This is consistent with efficient market theory for a liquid, developed Nordic market, where information advantages are rapidly arbitraged away.</div>
+          <div class="finding-tags"><span class="tag tag-red">0/10 sig. CAPM alpha</span><span class="tag tag-red">7/10 below benchmark</span><span class="tag tag-blue">Benchmark Sharpe: 0.407</span></div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-num">02</div>
+        <div>
+          <div class="finding-title">Multi-factor model changes the picture — 7/10 significant in FF6 FX Adj.</div>
+          <div class="finding-body">The central analytical finding. Moving from CAPM to the fully currency-adjusted FF6 model takes significant alpha from 0 to 7 out of 10 funds. <strong>CAPM was penalising factor tilts as if they were uncompensated risk.</strong> Funds with strong growth tilts (negative HML) were being charged for "value risk" they were not actually taking. Stripping out these factor exposures reveals the true manager residual. The progression from 0 to 1 to 4 to 7 significant funds across the four models is the central analytical story of this analysis.</div>
+          <div class="finding-tags"><span class="tag tag-red">CAPM: 0/10</span><span class="tag tag-amber">CAPM FX: 1/10</span><span class="tag tag-amber">FF6 No FX: 4/10</span><span class="tag tag-green">FF6 FX: 7/10</span></div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-num">03</div>
+        <div>
+          <div class="finding-title">DNB Nordic Small Cap — strongest alpha (t = 3.74) but worst conventional metrics</div>
+          <div class="finding-body">Annualised FF6 FX alpha of <strong>+17.2%</strong> (t = 3.74) — the highest result in the sample. Driven by a massive SMB loading of +1.084 (t = 5.64). The fund ranks poorly on raw return (5.93%) and has the highest max drawdown (−30.6%), yet demonstrates strong statistically significant skill once factor tilts are accounted for. This is the clearest illustration of why raw returns are a misleading measure of managerial ability.</div>
+          <div class="finding-tags"><span class="tag tag-green">Ann. α: +17.2% (t = 3.74)</span><span class="tag tag-green">SMB: 1.084 (t = 5.64)</span><span class="tag tag-red">Raw return: 5.93%</span></div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-num">04</div>
+        <div>
+          <div class="finding-title">FondsFinans Utbytte B — best on every conventional metric</div>
+          <div class="finding-body">The only fund with a positive Information Ratio (+0.050). Top performer on Sharpe (0.475), Sortino (0.720), raw return (8.85%), and cumulative return (+49.8%). Its dividend-yield focus likely imparts a quality tilt providing mild downside protection. Significant in FF6 FX Adj (t = 2.19). Its borderline SMB loading (+0.328, t = 1.92) may become significant with a longer sample.</div>
+          <div class="finding-tags"><span class="tag tag-green">Sharpe: 0.475</span><span class="tag tag-green">IR: +0.050</span><span class="tag tag-green">FF6 t(α): 2.19</span></div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-num">05</div>
+        <div>
+          <div class="finding-title">ESG underperforms on raw returns but shows factor-adjusted alpha</div>
+          <div class="finding-body">DNB Grønt Skifte returns just 4.07% annualised (IR: −1.037). However in FF6 FX Adj it achieves significant alpha (t = 1.96) with significant SMB (+0.393, t = 3.07) and negative HML (−0.318, t = −2.43). The underperformance is largely explained by factor tilts — its clean-energy orientation struggled during the 2022 energy crisis when fossil-heavy Nordic industrials significantly outperformed. The ESG label describes the investment universe, not the factor exposure.</div>
+          <div class="finding-tags"><span class="tag tag-red">Raw return: 4.07%</span><span class="tag tag-red">IR: −1.037</span><span class="tag tag-green">FF6 t(α): 1.96</span></div>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="finding-num">06</div>
+        <div>
+          <div class="finding-title">Delphi Nordic — genuine persistent underperformer</div>
+          <div class="finding-body">Unlike most funds, Delphi Nordic remains at weak alpha even after full factor adjustment (FF6 FX Adj: t = 0.97). Worst Information Ratio (−1.187), negative Sharpe and Sortino, and Prob. Lucky IR = 99.6% — there is only a 0.4% chance this level of underperformance is random. No factor loading is significant. This is genuine persistent underperformance rather than factor mismeasurement, and in this case the CAPM result was not misleading.</div>
+          <div class="finding-tags"><span class="tag tag-red">IR: −1.187</span><span class="tag tag-red">Prob. Lucky: 99.6%</span><span class="tag tag-red">Sharpe: −0.015</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="methodology">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">05 · Methodology</div>
+      <h2 class="section-title">Data & Methods</h2>
+    </div>
+    <div class="method-grid">
+      <div class="method-card"><div class="method-title">Sample & Universe</div><div class="method-body">10 actively managed Nordic equity funds (NAV in NOK). April 2021 – March 2026. T = 60 monthly observations. Benchmark: VINXBCAPNOKNI (Nasdaq VINX Benchmark Cap NOK Net Index).</div></div>
+      <div class="method-card"><div class="method-title">Risk-Free Rate</div><div class="method-body">Norwegian NIBOR (monthly end-of-period). Applied to compute all fund and benchmark excess returns. Appropriate given all NAVs and benchmark are NOK-denominated.</div></div>
+      <div class="method-card"><div class="method-title">Factor Model</div><div class="method-body">European Fama-French 5-factor + Momentum (WML) from Kenneth French's data library. These factors are computed from a USD perspective — USD→NOK conversion applied for the currency-adjusted specifications.</div></div>
+      <div class="method-card"><div class="method-title">Nordic Market Factor</div><div class="method-body">MSCI Nordic Countries Net Return Index (EUR) converted to NOK using monthly EUR/NOK spot rate changes. Replaces the European FF Mkt-RF in both CAPM and FF6 regressions.</div></div>
+    </div>
+    <div class="formula">
+      <strong>MSCI Nordic → NOK conversion:</strong><br>
+      MSCI_NOK = (1 + MSCI_EUR) &times; (1 + EUR/NOK_&Delta;) &minus; 1<br>
+      MKT_RF_adj = MSCI_NOK &minus; NIBOR<br><br>
+      <strong>FF Factor conversion (USD → NOK):</strong><br>
+      Factor_NOK = (1 + Factor_USD) &times; (1 + USD/NOK_&Delta;) &minus; 1 &minus; NIBOR
+    </div>
+    <p style="font-size:14px;color:var(--dim);margin-bottom:20px;">Four regressions per fund (40 total): (1) CAPM No FX Adj — European FF Mkt-RF &nbsp;|&nbsp; (2) CAPM FX Adj — MSCI Nordic NOK &nbsp;|&nbsp; (3) FF6 No FX Adj — Nordic mkt + raw FF factors &nbsp;|&nbsp; (4) FF6 FX Adj — Nordic mkt + USD→NOK FF factors</p>
+    <div class="events">
+      <div class="event-card"><div class="event-date">Sep 2022</div><div class="event-title">Maximum Drawdown — All Funds</div><div class="event-body">Every fund hit its maximum drawdown simultaneously during the European rate-hiking cycle. Range: −17.5% (Alfred Berg) to −30.6% (DNB Small Cap). Systematic risk dominated entirely.</div></div>
+      <div class="event-card"><div class="event-date">Mar 2025</div><div class="event-title">Synchronised Market Crash</div><div class="event-body">Benchmark fell −8.47%. Nearly every fund fell 7–10% in the same month — confirming that a single-region active portfolio provides no diversification against systematic shocks.</div></div>
+      <div class="event-card"><div class="event-date">Q1 2026</div><div class="event-title">FIRST Veritas Freefall</div><div class="event-body">−9.0%, −8.6%, −5.1% in three consecutive months while the benchmark was approximately flat. Low benchmark correlation (0.752) reflects concentrated idiosyncratic bets that failed persistently.</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="section" id="recommendation">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">06 · Investment Recommendation</div>
+      <h2 class="section-title">Should You Invest in These Funds?</h2>
+      <p class="section-desc">Based on five years of performance data, CAPM and FF6 regressions, and risk-adjusted metrics — a frank assessment of all 10 funds.</p>
+    </div>
+
+    <div class="callout callout-red" style="margin-bottom:32px;">
+      <strong>The overarching conclusion:</strong> The passive benchmark (VINXBCAPNOKNI) outperforms 7 of 10 funds on raw return, 8 of 10 on Sharpe ratio, and zero funds produce statistically significant CAPM alpha over the 5-year period. The most defensible recommendation for a Norwegian investor seeking Nordic equity exposure is to <strong>buy the index</strong> — lower cost, better risk-adjusted returns, no manager risk. If active management is required, the three funds below represent the least objectionable choices based on the evidence.
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;">
+
+      <div>
+        <h3 style="font-family:var(--serif);font-size:18px;font-weight:600;color:var(--green);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--green);">&#10003; Recommend</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+
+          <div class="method-card" style="border-left:3px solid var(--green);">
+            <div class="method-title" style="color:var(--green);">FondsFinans Utbytte B — First choice</div>
+            <div class="method-body" style="margin-top:6px;">The only fund with a positive Information Ratio (+0.050) and best-in-class on Sharpe (0.475), Sortino (0.720), raw return (8.85%), and cumulative return (+49.8%). Significant alpha in FF6 FX Adj (t = 2.19). Its dividend-yield mandate appears to deliver a genuine quality tilt with mild downside protection. If you must invest actively in Nordic equities, this is the clearest choice.</div>
+            <div class="finding-tags" style="margin-top:10px;">
+              <span class="tag tag-green">Return: 8.85%</span>
+              <span class="tag tag-green">Sharpe: 0.475</span>
+              <span class="tag tag-green">IR: +0.050</span>
+              <span class="tag tag-green">FF6 t(α): 2.19</span>
+            </div>
+          </div>
+
+          <div class="method-card" style="border-left:3px solid var(--green);">
+            <div class="method-title" style="color:var(--green);">Alfred Berg Gambak — Second choice</div>
+            <div class="method-body" style="margin-top:6px;">Strong risk-adjusted performance with the lowest max drawdown among positive-return funds (−17.5%). Near-benchmark returns (8.60%), good Sharpe (0.444), and significant alpha in CAPM FX Adj (t = 2.01) and FF6 FX Adj (t = 2.13). Consistent results across multiple model specifications increase confidence in the finding.</div>
+            <div class="finding-tags" style="margin-top:10px;">
+              <span class="tag tag-green">Return: 8.60%</span>
+              <span class="tag tag-green">Max DD: −17.5%</span>
+              <span class="tag tag-green">FF6 t(α): 2.13</span>
+            </div>
+          </div>
+
+          <div class="method-card" style="border-left:3px solid #d97706;">
+            <div class="method-title" style="color:#d97706;">Holberg Norden — Conditional recommendation</div>
+            <div class="method-body" style="margin-top:6px;">Near-benchmark returns (8.44%), good Sharpe (0.399), lowest max drawdown of all funds (−18.0%), and significant FF6 FX alpha (t = 2.18). The caveat: its IR is essentially zero (−0.005) and it barely matches the benchmark after fees. Suitable for investors who want active management but demand capital preservation as a priority.</div>
+            <div class="finding-tags" style="margin-top:10px;">
+              <span class="tag tag-amber">Return: 8.44%</span>
+              <span class="tag tag-amber">Lowest MDD: −18.0%</span>
+              <span class="tag tag-amber">FF6 t(α): 2.18</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-family:var(--serif);font-size:18px;font-weight:600;color:var(--red);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--red);">&#10007; Do Not Recommend</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+
+          <div class="method-card" style="border-left:3px solid var(--red);">
+            <div class="method-title" style="color:var(--red);">Delphi Nordic — Genuine underperformer</div>
+            <div class="method-body" style="margin-top:6px;">The worst fund by almost every measure. Negative Sharpe (−0.015), worst IR (−1.187), and Prob. Lucky IR = 99.6% — there is only a 0.4% chance this underperformance is random. Crucially, the FF6 model offers no rehabilitation: alpha remains insignificant (t = 0.97) even after full adjustment. This is genuine persistent manager underperformance.</div>
+            <div class="finding-tags" style="margin-top:10px;">
+              <span class="tag tag-red">IR: −1.187</span>
+              <span class="tag tag-red">Prob. Lucky: 99.6%</span>
+              <span class="tag tag-red">Sharpe: −0.015</span>
+            </div>
+          </div>
+
+          <div class="method-card" style="border-left:3px solid var(--red);">
+            <div class="method-title" style="color:var(--red);">FIRST Veritas — Uncompensated idiosyncratic risk</div>
+            <div class="method-body" style="margin-top:6px;">Near-zero Sharpe (0.012) over 5 years. Low benchmark correlation (0.752) signals high idiosyncratic risk — yet this risk is not rewarded. The fund lost −21% in Q1 2026 alone while the benchmark was roughly flat. Alpha is insignificant in all four models. Investors are bearing concentrated risk without compensation.</div>
+            <div class="finding-tags" style="margin-top:10px;">
+              <span class="tag tag-red">Sharpe: 0.012</span>
+              <span class="tag tag-red">Q1 2026: −21%</span>
+              <span class="tag tag-red">No sig. alpha</span>
+            </div>
+          </div>
+
+          <div class="method-card" style="border-left:3px solid var(--red);">
+            <div class="method-title" style="color:var(--red);">Handelsbanken Norden — Closet indexer</div>
+            <div class="method-body" style="margin-top:6px;">Correlation of 0.965 with the benchmark — the fund moves in near-perfect lockstep with the VINX index. Yet it charges active management fees and delivers only 6.27% annualised versus the benchmark's 8.47% — a 220 basis point annual shortfall. Investors are paying active fees for passive-equivalent exposure, minus costs.</div>
+            <div class="finding-tags" style="margin-top:10px;">
+              <span class="tag tag-red">Corr: 0.965</span>
+              <span class="tag tag-red">Active return: −2.2%</span>
+              <span class="tag tag-red">IR: −0.594</span>
+            </div>
+          </div>
+
+          <div class="method-card" style="border-left:3px solid var(--red);">
+            <div class="method-title" style="color:var(--red);">DNB Grønt Skifte, DNB Norden, ODIN Norden</div>
+            <div class="method-body" style="margin-top:6px;">All three underperform the benchmark materially. DNB Grønt Skifte (4.07%) and DNB Norden (4.86%) lag by over 350 basis points annually. ODIN Norden (7.17%) is closer but carries the highest volatility (17.03%) and largest drawdown (−28.4%) of the non-small-cap funds. None offer sufficient risk-adjusted compensation relative to the passive alternative.</div>
+            <div class="finding-tags" style="margin-top:10px;">
+              <span class="tag tag-red">DNB Grønt: 4.07%</span>
+              <span class="tag tag-red">DNB Norden: 4.86%</span>
+              <span class="tag tag-red">ODIN MDD: −28.4%</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>A note on DNB Nordic Small Cap:</strong> This fund deserves special treatment. Its raw return (5.93%) and conventional metrics are poor, yet it has the strongest statistical alpha in the entire sample (FF6 FX Adj: t = 3.74, ann. α = +17.2%). The alpha survives controlling for its large small-cap (SMB = 1.084) and aggressive investment (CMA = −0.471) tilts. If an investor specifically wants small-cap Nordic exposure and has the risk tolerance for −30.6% drawdowns, the manager appears to add genuine value within that mandate. It is therefore neither a clear recommend nor a clear avoid — it depends entirely on the investor's mandate and risk appetite.
+    </div>
+
+  </div>
+</div>
+
+<footer>Nordic Fund Performance Analysis &middot; Empirical Task 2B &middot; NHH Bergen &middot; Apr 2021&ndash;Mar 2026 &middot; T=60 &middot; VINXBCAPNOKNI &middot; European FF5F+Momentum &middot; NIBOR</footer>
+
+<script>
+function switchTab(e,id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('panel_'+id).classList.add('active');e.target.classList.add('active')}
+</script>
+</body>
+</html>
+<!-- This replaces the closing footer tag - we inject before it -->
